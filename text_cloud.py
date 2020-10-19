@@ -5,6 +5,11 @@ from collections import Counter
 import string
 import sys
 import random
+import math
+
+if(len(sys.argv) != 4):
+    print("Incorrect arguments.")
+    quit()
 # Read in exclude file - probably in an array (list in Python)
 excludeFile = open(sys.argv[2])
 excludedWords = excludeFile.read().split()
@@ -13,7 +18,7 @@ excludedWords = excludeFile.read().split()
 punc = set(string.punctuation)
 i = 0
 wordsList = []
-with open(sys.argv[1], 'r') as file:
+with open(sys.argv[1], 'r', encoding='utf-8') as file:
     for line in file:
         for word in line.split():
             word = word.lower()
@@ -30,16 +35,18 @@ top50 = words.most_common(50)
 # Calculate size range
 # Source: https://www.tutorialspoint.com/python/python_tuples.htm
 sizeRange = top50[0][1] - top50[49][1]
+adjust = len(wordsList) * .008
+print(adjust)
 # Sort alphabetically
 # Source: https://docs.python.org/3/howto/sorting.html
 top50 = sorted(top50, key=lambda w:w[0])
 cnt = 0
-with open(sys.argv[3], 'w') as file:
+with open(sys.argv[3], 'w', encoding='utf-8') as file:
     file.write("<!DOCTYPE html><html><body>")
     for i in top50:
         r = random.randint(0, 255)
         g = random.randint(0, 255)
         b = random.randint(0, 255)
-        file.write("<span style = \"font-size:" + str((sizeRange * top50[cnt][1])/100) + "%; color: rgb(" + str(r) + ", " + str(g) + ", " + str(b) + ")\">" + top50[cnt][0] + " </span> \n")
+        file.write("<span style = \"font-size:" + str((sizeRange * top50[cnt][1])/adjust) + "%; color: rgb(" + str(r) + ", " + str(g) + ", " + str(b) + ")\">" + top50[cnt][0] + " </span> \n")
         cnt += 1
     file.write("\n</body></html>")
